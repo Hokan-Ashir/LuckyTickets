@@ -1,28 +1,34 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LuckyTickets {
 
-    private static final int TOTAL_NUMBER_OF_TICKETS = 1000000;
-
-    public void test() {
-        double squareRoot = Math.sqrt(TOTAL_NUMBER_OF_TICKETS);
+    public void test(int numberOfTickets) {
+        double squareRoot = Math.sqrt(numberOfTickets);
         if (squareRoot != (int) squareRoot) {
             System.out.println("Invalid number of total tickets, must have integer square root value");
             return;
         }
 
-        Map<Integer, Map<Integer, List<Integer>>> luckyTickets = new HashMap<>();
-        int minimumPart = (int) Math.pow(10.0, Math.ceil(Math.log10(TOTAL_NUMBER_OF_TICKETS) / 2.0));
-        int temp = TOTAL_NUMBER_OF_TICKETS;
-        while (temp != minimumPart) {
-            temp = temp / 10;
-            luckyTickets.put(temp, new HashMap<Integer, List<Integer>>());
+        final double ticketsLog10 = Math.log10(numberOfTickets);
+        if (ticketsLog10 != (int) ticketsLog10) {
+            System.out.println("Invalid number of total tickets, must have integer log_10 value");
+            return;
         }
 
-        for (int i = 0; i < TOTAL_NUMBER_OF_TICKETS; i++) {
+        if (ticketsLog10 % 2 != 0) {
+            System.out.println("Invalid number of total tickets, must have even log_10 value");
+            return;
+        }
+
+        Map<Integer, Map<Integer, List<Integer>>> luckyTickets = new TreeMap<>();
+        int minimumPart = (int) Math.pow(10.0, Math.ceil(ticketsLog10 / 2.0));
+        int temp = numberOfTickets;
+        while (temp != minimumPart) {
+            temp = temp / 10;
+            luckyTickets.put(temp, new TreeMap<Integer, List<Integer>>());
+        }
+
+        for (int i = 0; i < numberOfTickets; i++) {
             boolean isLucky = isLucky(i, minimumPart);
             if (!isLucky) {
                 continue;
