@@ -1,3 +1,8 @@
+import org.knowm.xchart.QuickChart;
+import org.knowm.xchart.SwingWrapper;
+import org.knowm.xchart.XYChart;
+import org.knowm.xchart.XYChartBuilder;
+
 import java.util.*;
 
 public class LuckyTickets {
@@ -49,6 +54,27 @@ public class LuckyTickets {
         }
 
         printLuckyTickets(luckyTickets);
+
+        displayTicketsDistribution(luckyTickets);
+    }
+
+    private void displayTicketsDistribution(Map<Integer, Map<Integer, List<Integer>>> luckyTickets) {
+        XYChart chart = new XYChartBuilder().width(1800).height(1024).
+                title(getClass().getSimpleName()).xAxisTitle("Tickets").yAxisTitle("Amount of lucky tickets").build();
+
+        for (Map.Entry<Integer, Map<Integer, List<Integer>>> integerMapEntry : luckyTickets.entrySet()) {
+            final Integer order = integerMapEntry.getKey();
+            final String chartName = "Order: " + order;
+            List<Integer> xData = new ArrayList<>();
+            List<Integer> yData = new ArrayList<>();
+            for (Map.Entry<Integer, List<Integer>> integerListEntry : integerMapEntry.getValue().entrySet()) {
+                xData.add(integerListEntry.getKey() * order);
+                yData.add(integerListEntry.getValue().size());
+            }
+            chart.addSeries(chartName, xData, yData);
+        }
+
+        new SwingWrapper<>(chart).displayChart();
     }
 
     private int getMinimumDivisionOrder(int numberOfTickets) {
