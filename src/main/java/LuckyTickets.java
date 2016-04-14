@@ -2,26 +2,33 @@ import java.util.*;
 
 public class LuckyTickets {
 
+    public int nextLuckyTicket(int ticketNumber, int numberOfTickets) {
+        checkNumberOfTickets(numberOfTickets);
+
+        if (ticketNumber >= numberOfTickets) {
+            throw new RuntimeException("Invalid ticket number, must be less than number of tickets");
+        }
+
+        int previousLuckyTicket = 0;
+        int minimumPart = getMinimumDivisionOrder(numberOfTickets);
+        for (int i = 0; i < numberOfTickets; i++) {
+            if (isLucky(i, minimumPart)) {
+                previousLuckyTicket = i;
+            }
+
+            if (ticketNumber < i) {
+                return previousLuckyTicket;
+            }
+        }
+
+        return previousLuckyTicket;
+    }
+
     public void test(int numberOfTickets) {
-        double squareRoot = Math.sqrt(numberOfTickets);
-        if (squareRoot != (int) squareRoot) {
-            System.out.println("Invalid number of total tickets, must have integer square root value");
-            return;
-        }
-
-        final double ticketsLog10 = Math.log10(numberOfTickets);
-        if (ticketsLog10 != (int) ticketsLog10) {
-            System.out.println("Invalid number of total tickets, must have integer log_10 value");
-            return;
-        }
-
-        if (ticketsLog10 % 2 != 0) {
-            System.out.println("Invalid number of total tickets, must have even log_10 value");
-            return;
-        }
+        checkNumberOfTickets(numberOfTickets);
 
         Map<Integer, Map<Integer, List<Integer>>> luckyTickets = new TreeMap<>();
-        int minimumPart = (int) Math.pow(10.0, Math.ceil(ticketsLog10 / 2.0));
+        int minimumPart = getMinimumDivisionOrder(numberOfTickets);
         int temp = numberOfTickets;
         while (temp != minimumPart) {
             temp = temp / 10;
@@ -42,6 +49,31 @@ public class LuckyTickets {
         }
 
         printLuckyTickets(luckyTickets);
+    }
+
+    private int getMinimumDivisionOrder(int numberOfTickets) {
+        final double ticketsLog10 = Math.log10(numberOfTickets);
+        return (int) Math.pow(10.0, Math.ceil(ticketsLog10 / 2.0));
+    }
+
+    private void checkNumberOfTickets(int numberOfTickets) {
+        if (numberOfTickets <= 0) {
+            throw new RuntimeException("Invalid number of total tickets, must be positive");
+        }
+
+        double squareRoot = Math.sqrt(numberOfTickets);
+        if (squareRoot != (int) squareRoot) {
+            throw new RuntimeException("Invalid number of total tickets, must have integer square root value");
+        }
+
+        final double ticketsLog10 = Math.log10(numberOfTickets);
+        if (ticketsLog10 != (int) ticketsLog10) {
+            throw new RuntimeException("Invalid number of total tickets, must have integer log_10 value");
+        }
+
+        if (ticketsLog10 % 2 != 0) {
+            throw new RuntimeException("Invalid number of total tickets, must have even log_10 value");
+        }
     }
 
     private List<Integer> getLuckyTicketList(Map<Integer, List<Integer>> map, int order) {
