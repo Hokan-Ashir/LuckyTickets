@@ -16,9 +16,9 @@ public class LuckyTickets {
         }
 
         List<Integer> luckyTickets = Mappings.INSTANCE.getLuckyTickets(numberOfTickets);
-        for (int i = 0; i < luckyTickets.size(); i++) {
-            if (luckyTickets.get(i) > ticketNumber) {
-                return luckyTickets.get(i - 1);
+        for (Integer luckyTicket : luckyTickets) {
+            if (luckyTicket > ticketNumber) {
+                return luckyTicket;
             }
         }
 
